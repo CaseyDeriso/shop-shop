@@ -5,6 +5,8 @@ import {
   UPDATE_CURRENT_CATEGORY
 } from "../utils/actions";
 
+import { reducer } from '../utils/reducers';
+
 // create a sample of what our global state will look like
 const initialState = {
   products: [],
@@ -12,7 +14,7 @@ const initialState = {
   currentCategory: "1",
 };
 
-TextDecoderStream("UPDATE_PRODUCTS", () => {
+test("UPDATE_PRODUCTS", () => {
   let newState = reducer(initialState, {
     type: UPDATE_PRODUCTS,
     products: [ {}, {} ],
@@ -20,4 +22,4 @@ TextDecoderStream("UPDATE_PRODUCTS", () => {
 
   expect(newState.products.length).toBe(2);
   expect(initialState.products.length).toBe(0)
-})
+});
