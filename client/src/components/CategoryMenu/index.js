@@ -1,10 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from '@apollo/react-hooks';
 import { QUERY_CATEGORIES } from "../../utils/queries";
+import { UPDATE_CATEGORIES, UPDATE_CURRENT_CATEGORY } from "../../utils/actions";
+import { useStoreContext } from "../../utils/GlobalState";
 
 function CategoryMenu({ setCategory }) {
+  // old data management
+  // const { data: categoryData } = useQuery(QUERY_CATEGORIES);
+  // const categories = categoryData?.categories || [];
+  /////////////////////////////////////////////////////////////////
+  // new global state object data managment
+  const [state, dispatch] = useStoreContext();
+
+  const { categories } = state;
+
   const { data: categoryData } = useQuery(QUERY_CATEGORIES);
-  const categories = categoryData?.categories || [];
+
+  // create useEffect to dispatch categories once query is handled
+  useEffect(() => {
+    // if categoryData exists or has changed from the response of useQUery, then run dispatch
+    if (categoryData) {
+      // execute our dispatch function with our action object indicating the type of action and the data to set our state for categories to
+      dispatch({
+        type: UPDATE_CATEGORIES,
+        categories: categoryData.categories,
+      });
+    }
+  }, [categoryData, dispatch]);
+
+  const handleClick = id => {
+    dispatch({
+      type: UPDATE_CURRENT_CATEGORY,
+      currentCategory: id,
+    });
+  };
 
   return (
     <div>
@@ -13,7 +42,7 @@ function CategoryMenu({ setCategory }) {
         <button
           key={item._id}
           onClick={() => {
-            setCategory(item._id);
+            handleClick(item._id);
           }}
         >
           {item.name}
