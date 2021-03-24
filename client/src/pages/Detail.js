@@ -39,7 +39,7 @@ function Detail() {
     // if there are items in products to compare ids, run setCurrentProduct()
     if (products.length) {
       setCurrentProduct(products.find(product => product._id === id));
-    } else if (loading) {
+    } else if (data) {
     // else, dispatch the global state from useQuery and trigger the effect again
       dispatch({
         type: UPDATE_PRODUCTS,
