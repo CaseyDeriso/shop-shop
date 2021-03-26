@@ -1,20 +1,21 @@
 import React, { useEffect } from "react";
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from "@apollo/react-hooks";
 import { QUERY_CATEGORIES } from "../../utils/queries";
-import { UPDATE_CATEGORIES, UPDATE_CURRENT_CATEGORY } from "../../utils/actions";
+import {
+  UPDATE_CATEGORIES,
+  UPDATE_CURRENT_CATEGORY,
+} from "../../utils/actions";
 import { useStoreContext } from "../../utils/GlobalState";
 
+import { idbPromise } from "../../utils/helpers";
+
 function CategoryMenu({ setCategory }) {
-  // old data management
-  // const { data: categoryData } = useQuery(QUERY_CATEGORIES);
-  // const categories = categoryData?.categories || [];
-  /////////////////////////////////////////////////////////////////
   // new global state object data managment
   const [state, dispatch] = useStoreContext();
 
   const { categories } = state;
 
-  const { data: categoryData } = useQuery(QUERY_CATEGORIES);
+  const { loading, data: categoryData } = useQuery(QUERY_CATEGORIES);
 
   // create useEffect to dispatch categories once query is handled
   useEffect(() => {
@@ -25,10 +26,22 @@ function CategoryMenu({ setCategory }) {
         type: UPDATE_CATEGORIES,
         categories: categoryData.categories,
       });
+
+      categoryData.categories.forEach((category) => {
+        idbPromise("categories", "put", category);
+      });
+    } else if (!loading) {
+      // if there is no connection, get categories from IDB to dispatch
+      idbPromise("categories", "get", categories).then((categories) => {
+        dispatch({
+          type: UPDATE_CATEGORIES,
+          categories,
+        });
+      });
     }
   }, [categoryData, dispatch]);
 
-  const handleClick = id => {
+  const handleClick = (id) => {
     dispatch({
       type: UPDATE_CURRENT_CATEGORY,
       currentCategory: id,
@@ -38,7 +51,7 @@ function CategoryMenu({ setCategory }) {
   return (
     <div>
       <h2>Choose a Category:</h2>
-      {categories.map(item => (
+      {categories.map((item) => (
         <button
           key={item._id}
           onClick={() => {
