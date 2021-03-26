@@ -9,7 +9,6 @@ Shop-Shop is an E-Commerce application where users can buy items from several ca
 
 ## Table of Contents:
 * [Installation](#installation)
-* [Usage](#usage)
 * [Screenshot](#screenshot)
 * [Credits](#credits)
 
@@ -17,9 +16,6 @@ Shop-Shop is an E-Commerce application where users can buy items from several ca
 ## Installation 
 
 This projects development environment uses concurrently to run both the server and client server at the same time from the root directory, if you find the start command does not work from root, try running both the client and server from separate command line tabs. 
-
-## Usage 
-
 
 
 ## Screenshot
